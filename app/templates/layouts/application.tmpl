@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+    <head>
+        <meta charset="UTF-8">
+        <title>ReadWay</title>
+        <meta property="og:title" content="ReadWay" />
+        <meta property="og:description" content="Why read XML when you can use a website with well-designed typography?" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="wasm_exec.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.kde.org/aether-devel/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.kde.org/aether-devel/aether-sidebar.css" />
+        <style>
+            .list-group-item {
+                background-color: var(--base);
+            }
+            .text-white {
+                color: white !important;
+            }
+            .text-white .text-muted {
+                color: rgba(255,255,255,0.5) !important;
+            }
+            .bg-danger {
+                background-color: #dc3545 !important;
+            }
+            @media (prefers-color-scheme: dark) {
+                .menu-title h2 {
+                    color: #eff0f1 !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="body">
+            {{yield}}
+        </main>
+    </body>
+</html>
