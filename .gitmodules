@@ -1,0 +1,9 @@
+[submodule "protocols/plasma"]
+	path = protocols/plasma
+	url = https://invent.kde.org/libraries/plasma-wayland-protocols.git
+[submodule "protocols/wayland-protocols"]
+	path = protocols/wayland-protocols
+	url = https://gitlab.freedesktop.org/wayland/wayland-protocols.git
+[submodule "protocols/wayland"]
+	path = protocols/wayland
+	url = https://gitlab.freedesktop.org/wayland/wayland.git

@@ -3,11 +3,18 @@ package app
 import (
 	"encoding/xml"
 	"io/ioutil"
-	"math/rand"
+	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
+
+var rplcr = strings.NewReplacer(
+	" ", "_",
+)
+
+func toAnchor(s string) string {
+	return rplcr.Replace(strings.ToLower(s))
+}
 
 type Description struct {
 	Summary string `xml:"summary,attr"`
@@ -18,15 +25,7 @@ type Anchorer struct {
 	ID string
 }
 
-func (a *Anchorer) Anchor() string {
-	if a.ID == "" {
-		a.ID = strconv.FormatInt(rand.Int63(), 10)
-	}
-	return a.ID
-}
-
 type Argument struct {
-	Anchorer
 	Description Description `xml:"description"`
 	Name        string      `xml:"name,attr"`
 	Type        string      `xml:"type,attr"`
@@ -36,12 +35,8 @@ type Argument struct {
 	Enum        string      `xml:"enum,attr"`
 }
 
-func (a *Argument) Anchor() string {
-	return a.Anchorer.Anchor()
-}
-
 type Request struct {
-	Anchorer
+	Parent      *Interface
 	Description Description `xml:"description"`
 	Arguments   []Argument  `xml:"arg"`
 	Name        string      `xml:"name,attr"`
@@ -50,11 +45,11 @@ type Request struct {
 }
 
 func (a *Request) Anchor() string {
-	return a.Anchorer.Anchor()
+	return a.Parent.Anchor() + "_" + toAnchor(a.Name)
 }
 
 type Event struct {
-	Anchorer
+	Parent      *Interface
 	Description Description `xml:"description"`
 	Arguments   []Argument  `xml:"arg"`
 	Name        string      `xml:"name,attr"`
@@ -62,11 +57,11 @@ type Event struct {
 }
 
 func (a *Event) Anchor() string {
-	return a.Anchorer.Anchor()
+	return a.Parent.Anchor() + "_" + toAnchor(a.Name)
 }
 
 type EnumEntry struct {
-	Anchorer
+	Parent      *Enum
 	Description Description `xml:"description"`
 	Name        string      `xml:"name,attr"`
 	Summary     string      `xml:"summary,attr"`
@@ -75,46 +70,57 @@ type EnumEntry struct {
 }
 
 func (a *EnumEntry) Anchor() string {
-	return a.Anchorer.Anchor()
+	return a.Parent.Anchor() + "_" + toAnchor(a.Name)
 }
 
 type Enum struct {
-	Anchorer
-	Description Description `xml:"description"`
-	Entries     []EnumEntry `xml:"entry"`
-	Name        string      `xml:"name,attr"`
-	Since       int         `xml:"since,attr"`
-	Bitfield    bool        `xml:"bitfield,attr"`
+	Parent      *Interface
+	Description Description  `xml:"description"`
+	Entries     []*EnumEntry `xml:"entry"`
+	Name        string       `xml:"name,attr"`
+	Since       int          `xml:"since,attr"`
+	Bitfield    bool         `xml:"bitfield,attr"`
 }
 
 func (a *Enum) Anchor() string {
-	return a.Anchorer.Anchor()
+	return a.Parent.Anchor() + "_" + toAnchor(a.Name)
 }
 
 type Interface struct {
-	Anchorer
 	Name        string      `xml:"name,attr"`
 	Version     int         `xml:"version,attr"`
 	Description Description `xml:"description"`
-	Requests    []Request   `xml:"request"`
-	Events      []Event     `xml:"event"`
-	Enums       []Enum      `xml:"enum"`
+	Requests    []*Request  `xml:"request"`
+	Events      []*Event    `xml:"event"`
+	Enums       []*Enum     `xml:"enum"`
 }
 
 func (a *Interface) Anchor() string {
-	return a.Anchorer.Anchor()
+	return toAnchor(a.Name)
 }
 
 type Protocol struct {
-	Anchorer
-	Name        string      `xml:"name,attr"`
-	Copyright   string      `xml:"copyright"`
-	Description Description `xml:"description"`
-	Interfaces  []Interface `xml:"interface"`
+	Name        string       `xml:"name,attr"`
+	Copyright   string       `xml:"copyright"`
+	Description Description  `xml:"description"`
+	Interfaces  []*Interface `xml:"interface"`
 }
 
-func (a *Protocol) Anchor() string {
-	return a.Anchorer.Anchor()
+func (p *Protocol) SetTree() {
+	for _, iface := range p.Interfaces {
+		for _, enum := range iface.Enums {
+			enum.Parent = iface
+			for _, entry := range enum.Entries {
+				entry.Parent = enum
+			}
+		}
+		for _, ev := range iface.Events {
+			ev.Parent = iface
+		}
+		for _, req := range iface.Requests {
+			req.Parent = iface
+		}
+	}
 }
 
 func LoadProtocol(path string) Protocol {
@@ -124,6 +130,7 @@ func LoadProtocol(path string) Protocol {
 	}
 	proto := Protocol{}
 	err = xml.Unmarshal(data, &proto)
+	proto.SetTree()
 	if err != nil {
 		panic(err)
 	}
@@ -131,14 +138,19 @@ func LoadProtocol(path string) Protocol {
 }
 
 func GetXMLs(path string) (ret []string) {
-	files, err := ioutil.ReadDir(path)
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".xml") {
+			ret = append(ret, path)
+		}
+
+		return nil
+	})
 	if err != nil {
 		panic(err)
-	}
-	for _, file := range files {
-		if !file.IsDir() && strings.HasSuffix(file.Name(), ".xml") {
-			ret = append(ret, filepath.Join(path, file.Name()))
-		}
 	}
 	return
 }
@@ -166,9 +178,9 @@ type IndexData struct {
 
 func LoadProtocols() {
 	waylandMain := LoadProtocol("protocols/wayland.xml")
-	stable := GetProtocols("protocols/stable")
-	unstable := GetProtocols("protocols/unstable")
-	plasma := GetProtocols("protocols/plasma")
+	stable := GetProtocols("protocols/stable/")
+	unstable := GetProtocols("protocols/unstable/")
+	plasma := GetProtocols("protocols/plasma/")
 	RenderProtocol(waylandMain)
 	RenderProtocols(stable)
 	RenderProtocols(unstable)
