@@ -1,41 +1,44 @@
-<header class="bg-light-blue pa3">
-    <nav class="navbar">
+<header class="bg-stone-200 dark:bg-stone-800 p-2">
+    <nav>
         <a href="#">ReadWay Protocol Browser</a>
     </nav>
 </header>
 
-<aside class="sidebar">
-    <div id="sidebar-header" class="menu-box">
-        <div class="menu-title">
-            <h2>ReadWay</h2>
-        </div>
-    </div>
-    <div class="menu-box">
-        <ul>
-            <li><h4><a href="wayland.html">wayland</a></h4></li>
-            Stable:
-            {{ range $proto := .Stable }}
-                <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-            {{ end }}
-            <br>
-            Unstable:
-            {{ range $proto := .Unstable }}
-            <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-            {{ end }}
-            <br>
-            Staging:
-            {{ range $proto := .Staging }}
-            <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-            {{ end }}
-            <br>
-            Plasma:
-            {{ range $proto := .Plasma }}
-            <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-            {{ end }}
-            <br>
+<div class="flex flex-col w-full items-center pt-4">
+    <article class="prose dark:prose-invert">
+        <h1>ReadWay <small class="text-muted">protocol browser</small></h1>
+        <p class="lead" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
+            Why read XML when you can read something with curated typography and colours? <br>
+            Something special might happen when you drag an XML file onto this paragraph.
+        </p>
+
+        <h2><a href="wayland.html">Base Wayland Protocol</a></h2>
+
+        <h2>Stable Protocols</h2>
+        <ul class="list-group">
+        {{ range $proto := .Stable }}
+        <li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
+        {{ end }}
         </ul>
-    </div>
-</aside>
+
+        <h2>Unstable Protocols</h2>
+        <ul class="list-group">
+        {{ range $proto := .Unstable }}
+        <li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
+        {{ end }}
+        </ul>
+
+        <h2>Plasma Protocols</h2>
+        <ul class="list-group">
+        {{ range $proto := .Plasma }}
+        <li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
+        {{ end }}
+        </ul>
+
+    </article>
+
+</div>
+
 
 <script>
     const go = new Go();
@@ -65,37 +68,5 @@
         ev.preventDefault()
     }
 </script>
-
-<article class="content">
-<h1>ReadWay <small class="text-muted">protocol browser</small></h1>
-<p class="lead" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-    Why read XML when you can read something with curated typography and colours? <br>
-    Something special might happen when you drag an XML file onto this paragraph.
-</p>
-
-<h2><a href="wayland.html">Base Wayland Protocol</a></h2>
-
-<h2>Stable Protocols</h2>
-<ul class="list-group">
-{{ range $proto := .Stable }}
-<li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-{{ end }}
-</ul>
-
-<h2>Unstable Protocols</h2>
-<ul class="list-group">
-{{ range $proto := .Unstable }}
-<li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-{{ end }}
-</ul>
-
-<h2>Plasma Protocols</h2>
-<ul class="list-group">
-{{ range $proto := .Plasma }}
-<li class="list-group-item"><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
-{{ end }}
-</ul>
-
-</article>
 
 <br>

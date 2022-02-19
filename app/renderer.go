@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/qor/render"
@@ -16,6 +17,19 @@ var renderer = render.New(&render.Config{
 		return map[string]interface{}{
 			"unescape": func(in string) template.HTML {
 				return template.HTML(in)
+			},
+			"isLast": func(index, len int) bool {
+				return index+1 == len
+			},
+			"hasField": func(v interface{}, name string) bool {
+				rv := reflect.ValueOf(v)
+				if rv.Kind() == reflect.Ptr {
+					rv = rv.Elem()
+				}
+				if rv.Kind() != reflect.Struct {
+					return false
+				}
+				return rv.FieldByName(name).IsValid()
 			},
 			"join_strings": strings.Join,
 		}

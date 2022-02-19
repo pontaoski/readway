@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.codicon[class*="codicon-"] {
+    display: inline;
+    text-align: unset;
+    font-size: larger;
+    vertical-align: text-bottom;
+    margin-right: 0.5rem;
+}
+.symbol-keyword {
+    color: #b875dc;
+}
+.symbol-structure {
+    color: #3daee9;
+}
+.symbol-field {
+    color: #327fa2;
+}
+.symbol-enum {
+    color: #ef973c;
+}
+.symbol-enum-member {
+    color: #e8cb2d;
+}
+.symbol-event {
+    color: #00b79d;
+}
+.symbol-class {
+    color: #e9643a;
+}
+.symbol-method {
+    color: #e93a9a;
+}
+aside.prose a {
+    text-decoration: none;
+}
