@@ -173,17 +173,20 @@ type IndexData struct {
 	Wayland  Protocol
 	Stable   []Protocol
 	Unstable []Protocol
+	Staging  []Protocol
 	Plasma   []Protocol
 }
 
 func LoadProtocols() {
 	waylandMain := LoadProtocol("protocols/wayland.xml")
 	stable := GetProtocols("protocols/stable/")
+	staging := GetProtocols("protocols/staging/")
 	unstable := GetProtocols("protocols/unstable/")
 	plasma := GetProtocols("protocols/plasma/")
 	RenderProtocol(waylandMain)
 	RenderProtocols(stable)
 	RenderProtocols(unstable)
 	RenderProtocols(plasma)
-	RenderIndex(IndexData{waylandMain, stable, unstable, plasma})
+	RenderProtocols(staging)
+	RenderIndex(IndexData{waylandMain, stable, unstable, staging, plasma})
 }

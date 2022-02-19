@@ -1,14 +1,6 @@
-<header class="header">
+<header class="bg-light-blue pa3">
     <nav class="navbar">
-        <ol class="breadcrumb navbar-nav">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-                aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <li class="breadcrumb-link">
-                <a href="#">ReadWay Protocol Browser</a>
-            </li>
-        </ol>
+        <a href="#">ReadWay Protocol Browser</a>
     </nav>
 </header>
 
@@ -28,6 +20,11 @@
             <br>
             Unstable:
             {{ range $proto := .Unstable }}
+            <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
+            {{ end }}
+            <br>
+            Staging:
+            {{ range $proto := .Staging }}
             <li><a href="{{ $proto.Name }}.html">{{ $proto.Name }}</a></li>
             {{ end }}
             <br>

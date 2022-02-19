@@ -7,30 +7,10 @@
         <meta property="og:description" content="Why read XML when you can use a website with well-designed typography?" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="wasm_exec.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.kde.org/aether-devel/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.kde.org/aether-devel/aether-sidebar.css" />
-        <style>
-            .list-group-item {
-                background-color: var(--base);
-            }
-            .text-white {
-                color: white !important;
-            }
-            .text-white .text-muted {
-                color: rgba(255,255,255,0.5) !important;
-            }
-            .bg-danger {
-                background-color: #dc3545 !important;
-            }
-            @media (prefers-color-scheme: dark) {
-                .menu-title h2 {
-                    color: #eff0f1 !important;
-                }
-            }
-        </style>
+        <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     </head>
     <body>
-        <main class="body">
+        <main class="helvetica">
             {{yield}}
         </main>
     </body>
