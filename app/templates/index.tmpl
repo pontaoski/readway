@@ -39,34 +39,4 @@
 
 </div>
 
-
-<script>
-    const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
-        go.run(result.instance)
-        console.log(render("yeet"))
-    });
-    var reader = new FileReader();
-    reader.onload = function(event) {
-        let result = render(event.target.result)
-        history.pushState({}, null, "/custom")
-        document.open()
-        document.write(result)
-        document.close()
-    }
-    function dropHandler(ev) {
-        ev.preventDefault()
-        if (ev.dataTransfer.items) {
-            item = ev.dataTransfer.items[0].getAsFile()
-            reader.readAsText(item)
-        } else {
-            item = ev.dataTransfer.files[0]
-            reader.readAsText(item)
-        }
-    }
-    function dragOverHandler(ev) {
-        ev.preventDefault()
-    }
-</script>
-
 <br>

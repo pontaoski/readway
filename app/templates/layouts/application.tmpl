@@ -9,6 +9,34 @@
         <script src="wasm_exec.js"></script>
         <link rel="stylesheet" href="main.css"/>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.28/dist/codicon.css" />
+        <script defer>
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+                go.run(result.instance)
+                console.log(render("yeet"))
+            });
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                let result = render(event.target.result)
+                history.pushState({}, null, "/custom")
+                document.open()
+                document.write(result)
+                document.close()
+            }
+            function dropHandler(ev) {
+                ev.preventDefault()
+                if (ev.dataTransfer.items) {
+                    item = ev.dataTransfer.items[0].getAsFile()
+                    reader.readAsText(item)
+                } else {
+                    item = ev.dataTransfer.files[0]
+                    reader.readAsText(item)
+                }
+            }
+            function dragOverHandler(ev) {
+                ev.preventDefault()
+            }
+        </script>
     </head>
     <body class="bg-stone-100 dark:bg-stone-900 text-black dark:text-white">
         <main class="helvetica">
